@@ -1,0 +1,11 @@
+package example
+
+opts = "-p effects -p protocols"
+
+modules = Protocol.Echo 
+        , Protocol.Echo.Process
+        , Main
+
+main = Main
+
+executable = a.out
