@@ -15,6 +15,7 @@ import Protocol.Echo
 
 -- ---------------------------------------------------- [ Marshalling Commands ]
 
+-- Why doesn't this work
 instance IPCValue (resp : String ** resp = m) where
   toIPCString (resp ** _) = show resp ++ "\n"
   fromIPCString {m} str = case choose (str == m) of

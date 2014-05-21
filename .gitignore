@@ -1,5 +1,6 @@
 handler
-
+.#*
+#*
 dist
 cabal-dev/
 .cabal-sandbox
