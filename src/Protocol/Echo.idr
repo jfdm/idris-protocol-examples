@@ -20,19 +20,31 @@ import Effect.StdIO
 
 import System.Protocol
 
-||| One echo service is defined as a connection based application on TCP.
+||| An echo service simply sends back to the originating source any
+||| data it receives.
 ||| 
-||| A server listens for TCP connections on TCP port 7. Once a
-||| connection is established any data received is sent back. This
-||| continues until the calling user terminates the connection.
-echoProtocol : Protocol ['Client, 'Server] ()
-echoProtocol = do
-    msg <- 'Client ==> 'Server | String
-    'Server ==> 'Client | (resp ** so (resp == msg))
-    Done
+||| This is an enhanced version of the protocol in which an invariant
+||| is provide that stipulates that the message echoed back is the
+||| original message sent.
+total
+echo : Protocol ['Client, 'Server] ()
+echo = do
+    msg <- 'Client ==> 'Server | Maybe String
+    case msg of
+      Just m  => do
+        'Server ==> 'Client | (resp : String ** resp = m)
+--        'Server ==> 'Client | (resp : String ** so (resp == m))
+        Rec echo
+      Nothing => Done
     
-echoProtocol' : Protocol ['Client, 'Server] ()
-echoProtocol' = do
+||| An echo service simply sends back to the originating source any
+||| data it receives.
+||| 
+||| A naive version of the protocol. This version does not provide
+||| guarantees over the return message nor provides the recursive step.
+total
+echo' : Protocol ['Client, 'Server] ()
+echo' = do
     'Client ==> 'Server | String
     'Server ==> 'Client | String
     Done

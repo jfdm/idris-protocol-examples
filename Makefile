@@ -1,22 +1,28 @@
 ##  Makefile
 
-PKG=example.ipkg
-OPTS=
-EXE=a.out
+IDRIS = idris
+PKG   = example
+OPTS  =
+EXE   = a.out
 
 install: clean
-	idris ${OPTS} --install ${PKG}
+	${IDRIS} ${OPTS} --install ${PKG}.ipkg
 
 build: clean
-	idris ${OPTS} --build ${PKG}
+	${IDRIS} ${OPTS} --build ${PKG}.ipkg
 
 clean:
-	idris --clean ${PKG}
-	find . -name "*~" -delete
+	${IDRIS} --clean ${PKG}.ipkg
 	rm -rf ${EXE}
 
 check: clean
-	idris --checkpkg ${PKG}
+	${IDRIS} --checkpkg ${PKG}.ipkg
 
+doc:
+	${IDRIS} --mkdoc ${PKG}.ipkg
 
-.PHONY: clean 
+clobber: clean
+	find . -name "*~" -delete
+
+.PHONY: clean install build clean check doc clobber
+

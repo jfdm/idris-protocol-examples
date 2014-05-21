@@ -2,10 +2,20 @@ package example
 
 opts = "-p effects -p protocols"
 
+sourcedir = src
+main = Main
+executable = a.out
+
+
 modules = Protocol.Echo 
         , Protocol.Echo.Process
+        , Protocol.Echo.IPC
+
+        , Protocol.Time
+
+        , Protocol.Daytime
+
+        , Protocol.CharGen
+
         , Main
 
-main = Main
-
-executable = a.out
