@@ -33,11 +33,18 @@ import Effect.StdIO
 
 import System.Protocol
 
+||| A useful debugging and measurement tool is a character generator
+||| service. A character generator service simply sends data without
+||| regard to the input. The data may be anything.  It is recommended
+||| that a recognizable pattern be used in tha data.
+total
 chargen : Protocol ['Client, 'Server] ()
 chargen = do
-    'Server ==> 'Client | String
-    Rec chargen
-    Done
-    
+    msg <- 'Client ==> 'Server | Maybe String
+    case msg of
+      Just m => do
+        'Server ==> 'Client | String
+        Rec chargen
+      Nothing => Done
 
 -- --------------------------------------------------------------------- [ EOF ]

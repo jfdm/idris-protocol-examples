@@ -15,11 +15,10 @@ import Protocol.Echo
 
 -- ---------------------------------------------------------- [ Server Process ]
 
-||| Implementation of the Echo Protocol from the Server end of the
-||| Protocol.
-||| 
+||| Implementation of the Echo Protocol from the Server's perspective.
+|||
 ||| @client The PID of the client process.
-covering
+-- covering
 echoProcessServer : (client : PID)
                   -> Process IO (echo) 'Server ['Client := client] [STDIO] ()
 echoProcessServer client = do
@@ -28,15 +27,15 @@ echoProcessServer client = do
       Just m => do
         sendTo 'Client (m ** refl)
         rec (echoProcessServer client)
+
       Nothing => return ()
 
 -- ---------------------------------------------------------- [ Client Process ]
 
-||| Implementation of the Echo Protocol from the Client end of the
-||| Protocol.
+||| Implementation of the Echo Protocol from the Client's perspective.
 |||
 ||| @server The PID of the server process.
-covering
+-- covering
 echoProcessClient : (server : PID)
                    -> Process IO (echo) 'Client ['Server := server] [STDIO] ()
 echoProcessClient server = do
@@ -46,12 +45,12 @@ echoProcessClient server = do
       Nothing => do
         sendTo 'Server Nothing
         return ()
+
       Just m => do
         sendTo 'Server (Just m)
         (resp ** _ ) <- recvFrom 'Server
         putStrLn $ show resp
         rec (echoProcessClient server)
-
 
   where
     processMsg : String -> Maybe String
@@ -63,7 +62,7 @@ echoProcessClient server = do
 
 ||| Sample Innvocation of the Echo protocols between the client and
 ||| server functions.
-covering
+-- covering
 doEchoProcess : IO ()
 doEchoProcess = runConc [()] doEcho'
   where
@@ -78,9 +77,9 @@ doEchoProcess = runConc [()] doEcho'
 
 ||| Implementation of the Echo Protocol from the Server end of the
 ||| Protocol.
-||| 
+|||
 ||| @client The PID of the client process.
-covering
+-- covering
 echoProcessServer' : (client : PID)
            -> Process IO (echo') 'Server ['Client := client] [STDIO] ()
 echoProcessServer' client = do
@@ -92,17 +91,17 @@ echoProcessServer' client = do
 ||| Protocol.
 |||
 ||| @server The PID of the server process.
-covering
+-- covering
 echoProcessClient' : (server : PID)
            -> Process IO (echo') 'Client ['Server := server] [STDIO] ()
 echoProcessClient' server = do
     putStrLn "Enter some text:"
-    msg <- getStr    
+    msg <- getStr
     sendTo 'Server msg
     resp <- recvFrom 'Server
     putStrLn $ show (trim resp)
     return ()
-    
+
 
 ||| Sample Innvocation of the Echo protocols between the client and
 ||| server functions.
