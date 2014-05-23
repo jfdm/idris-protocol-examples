@@ -32,8 +32,10 @@ import System.Protocol
 ||| the time in seconds since midnight on January first 1900.
 |||
 ||| Enhanced version of the protocol.
-time : Protocol ['Client, 'Server] ()
-time = do
+total
+timeProtocol : Protocol ['Client, 'Server] ()
+timeProtocol = do
+    'Client ==> 'Server | Maybe String
     'Server ==> 'Client | Either String Int
     Done
 
@@ -41,9 +43,10 @@ time = do
 ||| and time.  The Time service sends back to the originating source
 ||| the time in seconds since midnight on January first 1900.
 |||
-||| A naive version of the protocol. 
-time' : Protocol ['Client, 'Server] ()
-time' = do
+||| A naive version of the protocol.
+total
+timeProtocol' : Protocol ['Client, 'Server] ()
+timeProtocol' = do
     'Server ==> 'Client | Int
     Done
 
