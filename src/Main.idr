@@ -10,14 +10,14 @@ import Protocol.Echo
 import Protocol.Echo.Process
 import Protocol.Echo.IPC
 
-import Protocol.Chargen
-import Protocol.Chargen.Process
+import Protocol.CharGen
+import Protocol.CharGen.Process
 
 import Protocol.Time
+import Protocol.Time.Process
+
 import Protocol.Daytime
-
-
-
+import Protocol.Daytime.Process
 
 data Example = Echo | Time | DayTime | CharGen
 data Context = IPC | Process | Network
@@ -39,20 +39,32 @@ processArgs (x::y::z::xs) = case y of
       "proc" => Process
       "net"  => Network
 
+doLaunch : Context -> IO () -> IO () -> IO () -> IO ()
+doLaunch (ctxt) i p n = case ctxt of
+  IPC     => i
+  Process => p
+  Network => n
+
 main : IO ()
 main = do
     args <- getArgs
     case processArgs args of
       Just (l,c)  => case l of
-        Echo    => doLaunch c (doEchoIPC) (doEchoProcess) (doEchoIPC)
-        CharGen => doLaunch c (putStrLn "as") (doChargenProcess) (putStrLn "asas")
+        Echo    => doLaunch c (doEchoIPC)
+                              (doEchoProcess)
+                              (nout)
+        CharGen => doLaunch c (nout)
+                              (doChargenProcess)
+                              (nout)
+        Time    => doLaunch c (nout)
+                              (doTimeProcess)
+                              (nout)
+        DayTime => doLaunch c (nout)
+                              (doDaytimeProcess)
+                              (nout)
       Nothing => putStrLn "Example program not there"
   where
-    doLaunch : Context -> IO () -> IO () -> IO () -> IO ()
-    doLaunch (ctxt) i p n = case ctxt of
-      IPC     => i
-      Process => p
-      Network => n
-
+     nout : IO ()
+     nout = putStrLn "Nothing just yet"
 
 -- --------------------------------------------------------------- [ EOF ]
