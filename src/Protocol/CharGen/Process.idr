@@ -11,18 +11,8 @@ import Effect.Default
 
 import System.Protocol
 
-import Protocol.Chargen
-
-text : String
-text = pack $ map (\x => chr x) [33..125]
-
-bump : String -> String
-bump s = reverse (strCons h (reverse t))
-  where
-    h : Char
-    h = strHead s
-    t : String
-    t = strTail s
+import Protocol.CharGen
+import Protocol.CharGen.Utils
 
 -- ---------------------------------------------------------- [ Server Process ]
 
@@ -38,7 +28,7 @@ chargenProcessServer str client = do
     case msg of
       Just m => do
         sendTo 'Client str
-        rec (chargenProcessServer (bump str) client)
+        rec (chargenProcessServer (strShift str) client)
 
       Nothing => return ()
 
@@ -76,7 +66,7 @@ doChargenProcess = runConc [()] doEcho'
   where
     doEcho' : Process IO (chargen) 'Client [] [STDIO] ()
     doEcho' = do
-       server <- spawn (chargenProcessServer text) [()]
+       server <- spawn (chargenProcessServer dummyText) [()]
        setChan 'Server server
        chargenProcessClient server
        dropChan 'Server

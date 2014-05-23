@@ -24,7 +24,7 @@
 --
 -- http://tools.ietf.org/html/rfc864
 -- --------------------------------------------------------------------- [ EOH ]
-module Protocol.Chargen
+module Protocol.CharGen
 
 import Effects
 
