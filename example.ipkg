@@ -7,15 +7,20 @@ main = Main
 executable = a.out
 
 
-modules = Protocol.Echo 
+modules = Protocol.Echo
         , Protocol.Echo.Process
         , Protocol.Echo.IPC
 
         , Protocol.Time
+        , Protocol.Time.Process
 
         , Protocol.Daytime
+        , Protocol.Daytime.Process
+        , Protocol.Daytime.Utils
 
         , Protocol.CharGen
+        , Protocol.CharGen.Process
+        , Protocol.CharGen.Utils
+
 
         , Main
-
