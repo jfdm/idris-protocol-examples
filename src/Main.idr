@@ -21,6 +21,7 @@ import Protocol.Daytime.Process
 data Example = Echo | Time | DayTime | CharGen
 
 processArgs : (List String) -> Maybe Example
+processArgs [x] = Nothing
 processArgs (x::y::xs) = case y of
     "echo"    => Just Echo
     "time"    => Just Time
