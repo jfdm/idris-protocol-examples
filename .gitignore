@@ -1,7 +1,8 @@
+# -*- mode: gitignore; -*-
 a.out
 handler
-.#*
-#*
+.\#*
+\#*
 dist
 cabal-dev/
 .cabal-sandbox
