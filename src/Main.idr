@@ -18,7 +18,9 @@ import Protocol.Time.Process
 import Protocol.Daytime
 import Protocol.Daytime.Process
 
-data Example = Echo | Time | DayTime | CharGen
+import Protocol.Greeter.Example
+
+data Example = Echo | Time | DayTime | CharGen | Greeter
 
 processArgs : (List String) -> Maybe Example
 processArgs [x] = Nothing
@@ -27,6 +29,7 @@ processArgs (x::y::xs) = case y of
     "time"    => Just Time
     "daytime" => Just DayTime
     "chargen" => Just CharGen
+    "greeter" => Just Greeter
     _         => Nothing
 
 main : IO ()
@@ -38,6 +41,7 @@ main = do
         CharGen => doChargenProcess
         Time    => doTimeProcess
         DayTime => doDaytimeProcess
+        Greeter => doGreeterProcess 3
       Nothing => putStrLn "Example program not there"
 
 -- --------------------------------------------------------------- [ EOF ]

@@ -8,8 +8,11 @@ EXE   = a.out
 install: clean
 	${IDRIS} ${OPTS} --install ${PKG}.ipkg
 
-build: clean
+build:
 	${IDRIS} ${OPTS} --build ${PKG}.ipkg
+
+clean_build: clean build
+
 
 clean:
 	${IDRIS} --clean ${PKG}.ipkg
@@ -25,4 +28,3 @@ clobber: clean
 	find . -name "*~" -delete
 
 .PHONY: clean install build clean check doc clobber
-

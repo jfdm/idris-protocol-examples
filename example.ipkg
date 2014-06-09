@@ -22,5 +22,9 @@ modules = Protocol.Echo
         , Protocol.CharGen.Process
         , Protocol.CharGen.Utils
 
+        , Protocol.Greeter
+        , Protocol.Greeter.Frontend
+        , Protocol.Greeter.Backend
+        , Protocol.Greeter.Example
 
         , Main
