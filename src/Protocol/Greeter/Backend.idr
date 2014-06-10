@@ -8,14 +8,9 @@ import Effect.State
 import System.Protocol
 
 import Protocol.Greeter
+import Protocol.Greeter.Common
 
 %access public
-
-GreeterBackendES : List EFFECT
-GreeterBackendES = [STDIO, STATE Int]
-
-GreeterBackEndProcess : GreeterProto () -> Type -> Type
-GreeterBackEndProcess p t = Process IO p 'Bob [] GreeterBackendES t
 
 -- --------------------------------------------------------- [ Greeter Backend ]
 
@@ -38,17 +33,18 @@ constructGreeting i = "Enter Command (" ++ func i ++ ", :? for help) :"
 
 mutual
   covering
-  backendBody : PID
-              -> GreeterBackEndProcess gBody ()
+  backendBody : PID -> GreeterBackend gBody ()
   backendBody proc = do
       setChan 'Alice proc
       sendTo 'Alice "Enter Command:"
       resp <- recvFrom 'Alice
       case resp of
+
         GreetMe str => do
           sendTo 'Alice ("Hello: " ++ str)
           dropChan 'Alice
           rec (backendBody proc)
+
         Help => do
           sendTo 'Alice obtainHelp
           dropChan 'Alice
@@ -63,17 +59,15 @@ mutual
           return ()
 
   covering
-  backendBody' : PID
-              -> GreeterBackEndProcess gBody ()
+  backendBody' : PID -> GreeterBackend gBody ()
   backendBody' proc = do
       setChan 'Alice proc
       sendTo 'Alice (constructGreeting !get)
-      resp <- recvFrom 'Alice
 
-      case resp of
+      case !(recvFrom 'Alice) of
         GreetMe str => do
-          c <- get
-          let resp = if c > 0
+
+          let resp = if !get > 0
                        then ("Hello: " ++ str)
                        else "Sorry ran out of greetings."
           update (\x => x - 1)
@@ -96,8 +90,8 @@ mutual
 
 covering
 greeterBackend : PID
-               -> (PID -> GreeterBackEndProcess gBody ())
-               -> GreeterBackEndProcess (greeter gBody) ()
+               -> (PID -> GreeterBackend gBody ())
+               -> GreeterBackend (greeter gBody) ()
 greeterBackend proc body = do
     setChan 'Alice proc
     foo <- recvFrom 'Alice

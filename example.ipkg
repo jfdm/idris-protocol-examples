@@ -23,6 +23,7 @@ modules = Protocol.Echo
         , Protocol.CharGen.Utils
 
         , Protocol.Greeter
+        , Protocol.Greeter.Common
         , Protocol.Greeter.Frontend
         , Protocol.Greeter.Backend
         , Protocol.Greeter.Example

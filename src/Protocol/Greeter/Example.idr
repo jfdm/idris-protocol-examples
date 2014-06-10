@@ -1,3 +1,6 @@
+-- ------------------------------------------------------------------------ [  ]
+-- Example innvocations of greeters
+-- --------------------------------------------------------------------- [ EOH ]
 module Protocol.Greeter.Example
 
 import Effects
@@ -8,24 +11,28 @@ import Effect.State
 import System.Protocol
 
 import Protocol.Greeter
+import Protocol.Greeter.Common
 import Protocol.Greeter.Frontend
 import Protocol.Greeter.Backend
 
 
 %access public
+-- ------------------------------------------------------------------------- [  ]
 
+||| A Greeter Backend.
 covering
-exampleGreeterBackend : PID -> GreeterBackEndProcess (greeter gBody) ()
---Process IO (greeter gBody) 'Bob [] GreeterBackendES ()
+exampleGreeterBackend : PID -> GreeterBackend (greeter gBody) ()
 exampleGreeterBackend proc = greeterBackend proc (backendBody')
 
--- --------------------------------------------------------------- [ doGreeter ]
-doGreeterProcess : Int -> IO ()
+||| Run the Greeter Application.
+|||
+||| @max The max number of greets to be given.
+doGreeterProcess : (max : Int) -> IO ()
 doGreeterProcess max = runConc [(),0] (doGreet' max)
   where
-    doGreet' : Int -> Process IO (greeter gBody) 'Alice [] [STDIO, STATE Int] ()
+    doGreet' : Int -> GreeterFrontend (greeter gBody) ()
     doGreet' max = do
       server <- spawn (exampleGreeterBackend) [(), max]
-      setChan 'Bob server
       greeterClient server
-      dropChan 'Bob
+
+-- --------------------------------------------------------------------- [ EOF ]

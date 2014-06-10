@@ -1,3 +1,6 @@
+-- ------------------------------------------------------------------------ [  ]
+-- Client Process
+-- --------------------------------------------------------------------- [ EOH ]
 module Protocol.Greeter.Frontend
 
 import Effects
@@ -8,11 +11,13 @@ import Effect.State
 import System.Protocol
 
 import Protocol.Greeter
+import Protocol.Greeter.Common
 
 %access public
 
 -- ---------------------------------------------------------- [ Greeter Client ]
 
+||| Get commands from the user.
 private
 readCmd : { [STDIO] } Eff IO Command
 readCmd = case (process !getStr) of
@@ -32,32 +37,40 @@ readCmd = case (process !getStr) of
       _ => Nothing
 
 
+||| Process commands and interact with the backend.
 private covering
-clientBody : (proc : PID)
-           -> Process IO (gBody) 'Alice ['Bob := proc] [STDIO] ()
+clientBody : (proc : PID) -> GreeterFrontend (gBody) ()
 clientBody proc = do
+     setChan 'Bob proc
      putStrLn !(recvFrom 'Bob)
      cmd <- readCmd
      sendTo 'Bob cmd
      case cmd of
        GreetMe str => do
          putStrLn !(recvFrom 'Bob)
+         dropChan 'Bob
          rec (clientBody proc)
 
        Cheat => do
+         dropChan 'Bob
          rec (clientBody proc)
 
        Help => do
          putStrLn !(recvFrom 'Bob)
+         dropChan 'Bob
          rec (clientBody proc)
 
-       Quit => return ()
+       Quit => do
+         dropChan 'Bob
+         return ()
 
+||| A Client process to perform the client greeter interactions.
 covering
-greeterClient : (proc : PID)
-              -> Process IO (greeter gBody) 'Alice ['Bob := proc] [STDIO] ()
+greeterClient : (proc : PID) -> GreeterFrontend (greeter gBody) ()
 greeterClient proc = do
+    setChan 'Bob proc
     sendTo 'Bob "I am a nasty hack"
+    dropChan 'Bob
     (clientBody proc)
     return ()
 
