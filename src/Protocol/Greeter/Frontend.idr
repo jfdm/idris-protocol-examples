@@ -19,7 +19,7 @@ import Protocol.Greeter.Common
 
 ||| Get commands from the user.
 private
-readCmd : { [STDIO] } Eff IO Command
+readCmd : { [STDIO] } Eff Command
 readCmd = case (process !getStr) of
     Just cmd => return cmd
     Nothing => do
@@ -38,7 +38,8 @@ readCmd = case (process !getStr) of
 
 
 ||| Process commands and interact with the backend.
-private covering
+private
+covering
 clientBody : (proc : PID) -> GreeterFrontend (gBody) ()
 clientBody proc = do
      setChan 'Bob proc

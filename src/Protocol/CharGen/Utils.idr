@@ -6,6 +6,7 @@
 module Protocol.CharGen.Utils
 
 ||| Rotate a String by one character
+%assert_total
 strShift : String -> String
 strShift s = reverse (strCons h (reverse t))
   where

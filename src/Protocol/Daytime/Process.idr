@@ -19,9 +19,9 @@ import Protocol.Daytime.Utils
 ||| Implementation of the Daytime Protocol from the Server's perspective.
 |||
 ||| @proc The PID of the client process.
--- covering
+covering
 daytimeProcessServer : (proc : PID)
-                  -> Process IO (daytime) 'Server ['Client := proc] [STDIO] ()
+                  -> Process (daytime) 'Server ['Client := proc] [STDIO] ()
 daytimeProcessServer proc = do
     msg <- recvFrom 'Client
     sendTo 'Client (getDayTime)
@@ -32,9 +32,9 @@ daytimeProcessServer proc = do
 ||| Implementation of the Daytime Protocol from the Client's perspective.
 |||
 ||| @proc The PID of the server process.
--- covering
+covering
 daytimeProcessClient : (proc : PID)
-                   -> Process IO (daytime) 'Client ['Server := proc] [STDIO] ()
+                   -> Process (daytime) 'Client ['Server := proc] [STDIO] ()
 daytimeProcessClient proc = do
     sendTo 'Server Nothing
     dt <- recvFrom 'Server
@@ -50,11 +50,11 @@ daytimeProcessClient proc = do
 
 ||| Sample Innvocation of the Echo protocols between the client and
 ||| server functions.
--- covering
+covering
 doDaytimeProcess : IO ()
 doDaytimeProcess = runConc [()] doDaytime'
   where
-    doDaytime' : Process IO (daytime) 'Client [] [STDIO] ()
+    doDaytime' : Process (daytime) 'Client [] [STDIO] ()
     doDaytime' = do
        server <- spawn (daytimeProcessServer) [()]
        setChan 'Server server

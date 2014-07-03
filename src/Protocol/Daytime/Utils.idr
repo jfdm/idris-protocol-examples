@@ -76,9 +76,10 @@ convert i = MkDaytime
 
 
 ||| Return the daytime if possible.
+%assert_total
 getDayTime : Either String DayTime
 getDayTime = let t = systime in
-    if t /= 0
+    if (t /= 0)
       then Right (convert t)
       else Left "No time"
 

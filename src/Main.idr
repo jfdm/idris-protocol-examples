@@ -20,6 +20,14 @@ import Protocol.Daytime.Process
 
 import Protocol.Greeter.Example
 
+usage : String
+usage = unwords $ intersperse "\n" ["Usage:",
+          "\t echo",
+          "\t time",
+          "\t daytime",
+          "\t chargen",
+          "\t greeter"]
+
 data Example = Echo | Time | DayTime | CharGen | Greeter
 
 processArgs : (List String) -> Maybe Example
@@ -42,6 +50,8 @@ main = do
         Time    => doTimeProcess
         DayTime => doDaytimeProcess
         Greeter => doGreeterProcess 3
-      Nothing => putStrLn "Example program not there"
+      Nothing => do
+        putStrLn "Example program not there"
+        putStrLn usage
 
 -- --------------------------------------------------------------- [ EOF ]

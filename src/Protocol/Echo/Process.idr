@@ -18,9 +18,9 @@ import Protocol.Echo
 ||| Implementation of the Echo Protocol from the Server's perspective.
 |||
 ||| @client The PID of the client process.
--- covering
+covering
 echoProcessServer : (client : PID)
-                  -> Process IO (echo) 'Server ['Client := client] [STDIO] ()
+                  -> Process (echo) 'Server ['Client := client] [STDIO] ()
 echoProcessServer client = do
     msg <- recvFrom 'Client
     case msg of
@@ -35,9 +35,9 @@ echoProcessServer client = do
 ||| Implementation of the Echo Protocol from the Client's perspective.
 |||
 ||| @server The PID of the server process.
--- covering
+covering
 echoProcessClient : (server : PID)
-                   -> Process IO (echo) 'Client ['Server := server] [STDIO] ()
+                   -> Process (echo) 'Client ['Server := server] [STDIO] ()
 echoProcessClient server = do
     putStrLn "Enter some text ('q' to quit):"
     msg_raw <- getStr
@@ -62,11 +62,11 @@ echoProcessClient server = do
 
 ||| Sample Innvocation of the Echo protocols between the client and
 ||| server functions.
--- covering
+covering
 doEchoProcess : IO ()
 doEchoProcess = runConc [()] doEcho'
   where
-    doEcho' : Process IO (echo) 'Client [] [STDIO] ()
+    doEcho' : Process (echo) 'Client [] [STDIO] ()
     doEcho' = do
        server <- spawn (echoProcessServer) [()]
        setChan 'Server server
@@ -79,9 +79,9 @@ doEchoProcess = runConc [()] doEcho'
 ||| Protocol.
 |||
 ||| @client The PID of the client process.
--- covering
+covering
 echoProcessServer' : (client : PID)
-           -> Process IO (echo') 'Server ['Client := client] [STDIO] ()
+           -> Process (echo') 'Server ['Client := client] [STDIO] ()
 echoProcessServer' client = do
     msg <- recvFrom 'Client
     sendTo 'Client msg
@@ -91,9 +91,9 @@ echoProcessServer' client = do
 ||| Protocol.
 |||
 ||| @server The PID of the server process.
--- covering
+covering
 echoProcessClient' : (server : PID)
-           -> Process IO (echo') 'Client ['Server := server] [STDIO] ()
+           -> Process (echo') 'Client ['Server := server] [STDIO] ()
 echoProcessClient' server = do
     putStrLn "Enter some text:"
     msg <- getStr
@@ -111,7 +111,7 @@ doEchoProcess' = forever $ runConc [()] doEcho''
     forever : IO () -> IO ()
     forever proc = do proc; forever proc
 
-    doEcho'' : Process IO (echo') 'Client [] [STDIO] ()
+    doEcho'' : Process (echo') 'Client [] [STDIO] ()
     doEcho'' = do
        server <- spawn (echoProcessServer') [()]
        setChan 'Server server

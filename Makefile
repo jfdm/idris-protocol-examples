@@ -11,8 +11,7 @@ install: clean
 build:
 	${IDRIS} ${OPTS} --build ${PKG}.ipkg
 
-clean_build: clean build
-
+build_clean: clean build
 
 clean:
 	${IDRIS} --clean ${PKG}.ipkg

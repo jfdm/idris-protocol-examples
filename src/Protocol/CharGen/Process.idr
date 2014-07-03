@@ -19,10 +19,10 @@ import Protocol.CharGen.Utils
 ||| Implementation of the Echo Protocol from the Server's perspective.
 |||
 ||| @client The PID of the client process.
--- covering
+covering
 chargenProcessServer : (str : String)
                   -> (client : PID)
-                  -> Process IO (chargen) 'Server ['Client := client] [STDIO] ()
+                  -> Process (chargen) 'Server ['Client := client] [STDIO] ()
 chargenProcessServer str client = do
     msg <- recvFrom 'Client
     case msg of
@@ -39,7 +39,7 @@ chargenProcessServer str client = do
 ||| @server The PID of the server process.
 -- covering
 chargenProcessClient : (server : PID)
-                   -> Process IO (chargen) 'Client ['Server := server] [STDIO] ()
+                   -> Process (chargen) 'Client ['Server := server] [STDIO] ()
 chargenProcessClient server = do
     putStrLn "To stop enter 'q':"
     msg_raw <- getStr
@@ -64,7 +64,7 @@ chargenProcessClient server = do
 doChargenProcess : IO ()
 doChargenProcess = runConc [()] doEcho'
   where
-    doEcho' : Process IO (chargen) 'Client [] [STDIO] ()
+    doEcho' : Process (chargen) 'Client [] [STDIO] ()
     doEcho' = do
        server <- spawn (chargenProcessServer dummyText) [()]
        setChan 'Server server

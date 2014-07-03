@@ -16,9 +16,9 @@ import Protocol.Time
 
 -- ---------------------------------------------------------- [ Server Process ]
 ||| Implementation of the Time Protocol from the Server's Perspective
--- covering
+covering
 timeProcessServer : (proc : PID)
-                  -> Process IO (timeProtocol) 'Server ['Client := proc] [STDIO] ()
+                  -> Process (timeProtocol) 'Server ['Client := proc] [STDIO] ()
 timeProcessServer proc = do
     req <- recvFrom 'Client
     let t = systime
@@ -34,9 +34,9 @@ timeProcessServer proc = do
 
 
 ||| Implementation of the Time Protocol from the Clients Perspective.
--- covering
+covering
 timeProcessClient : (proc : PID)
-                  -> Process IO (timeProtocol) 'Client ['Server := proc] [STDIO] ()
+                  -> Process (timeProtocol) 'Client ['Server := proc] [STDIO] ()
 timeProcessClient proc = do
     sendTo 'Server Nothing
     t <- recvFrom 'Server
@@ -51,11 +51,11 @@ timeProcessClient proc = do
 
 -- ------------------------------------------------------ [ Sample Innvocation ]
 ||| Sample innvocation
---covering
+covering
 doTimeProcess : IO ()
 doTimeProcess = runConc [()] doTime'
   where
-    doTime' : Process IO (timeProtocol) 'Client [] [STDIO] ()
+    doTime' : Process (timeProtocol) 'Client [] [STDIO] ()
     doTime' = do
         server <- spawn timeProcessServer [()]
         setChan 'Server server
