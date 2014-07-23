@@ -14,6 +14,7 @@ import Protocol.CharGen.Process
 
 import Protocol.Time
 import Protocol.Time.Process
+import Protocol.Time.ProcessAlt
 
 import Protocol.Daytime
 import Protocol.Daytime.Process
@@ -28,13 +29,14 @@ usage = unwords $ intersperse "\n" ["Usage:",
           "\t chargen",
           "\t greeter"]
 
-data Example = Echo | Time | DayTime | CharGen | Greeter
+data Example = Echo | Time | TimeAlt | DayTime | CharGen | Greeter
 
 processArgs : (List String) -> Maybe Example
 processArgs [x] = Nothing
 processArgs (x::y::xs) = case y of
     "echo"    => Just Echo
     "time"    => Just Time
+    "timealt" => Just TimeAlt
     "daytime" => Just DayTime
     "chargen" => Just CharGen
     "greeter" => Just Greeter
@@ -48,6 +50,7 @@ main = do
         Echo    => doEchoProcess
         CharGen => doChargenProcess
         Time    => doTimeProcess
+        TimeAlt => doTimeProcess'
         DayTime => doDaytimeProcess
         Greeter => doGreeterProcess 3
       Nothing => do

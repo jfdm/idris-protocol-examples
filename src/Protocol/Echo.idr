@@ -20,6 +20,8 @@ import Effect.StdIO
 
 import System.Protocol
 
+import Protocol.Utils
+
 ||| An echo service simply sends back to the originating source any
 ||| data it receives.
 |||
@@ -32,7 +34,7 @@ echo = do
     msg <- 'Client ==> 'Server | Maybe String
     case msg of
       Just m  => do
-        'Server ==> 'Client | (resp : String ** resp = m)
+        'Server ==> 'Client | Literal m
         Rec echo
       Nothing => Done
 

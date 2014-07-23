@@ -47,7 +47,7 @@ timeProtocol = do
 total
 timeProtocol' : Protocol ['Client, 'Server] ()
 timeProtocol' = do
-    'Server ==> 'Client | Int
+    'Server ==> 'Client | Either String Int
     Done
 
 -- --------------------------------------------------------------------- [ EOF ]
