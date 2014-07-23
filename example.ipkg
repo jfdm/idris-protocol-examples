@@ -1,6 +1,6 @@
 package example
 
-opts = "-p neweffects -p newprotocols"
+opts = "-p effects -p newprotocols"
 
 sourcedir = src
 main = Main
@@ -9,7 +9,6 @@ executable = a.out
 
 modules = Protocol.Echo
         , Protocol.Echo.Process
-        , Protocol.Echo.IPC
 
         , Protocol.Time
         , Protocol.Time.Process
