@@ -12,23 +12,27 @@ import Effect.Default
 import System.Protocol
 
 import Protocol.CharGen
-import Protocol.CharGen.Utils
 
+dummyTextStream : Stream Char
+dummyTextStream = cycle $ fromList $ map (\x => chr x) [33..125]
 -- ---------------------------------------------------------- [ Server Process ]
 
 ||| Implementation of the Echo Protocol from the Server's perspective.
 |||
 ||| @client The PID of the client process.
 covering
-chargenProcessServer : (str : String)
-                  -> (client : PID)
-                  -> Process (chargen) 'Server ['Client := client] [STDIO] ()
-chargenProcessServer str client = do
+chargenProcessServer : (str : Stream Char)
+                     -> Nat
+                     -> (client : PID)
+                     -> Process (chargen) 'Server ['Client := client] [STDIO] ()
+chargenProcessServer str pos client = do
     msg <- recvFrom 'Client
     case msg of
       Just m => do
-        sendTo 'Client str
-        rec (chargenProcessServer (strShift str) client)
+        let pos' = mod (pos + 1) 92
+        let str' = take 92 $ drop pos' str
+        sendTo 'Client (pack str')
+        rec (chargenProcessServer str (pos + 1) client)
 
       Nothing => return ()
 
@@ -66,7 +70,7 @@ doChargenProcess = runConc [()] doEcho'
   where
     doEcho' : Process (chargen) 'Client [] [STDIO] ()
     doEcho' = do
-       server <- spawn (chargenProcessServer dummyText) [()]
+       server <- spawn (chargenProcessServer dummyTextStream 0) [()]
        setChan 'Server server
        chargenProcessClient server
        dropChan 'Server
