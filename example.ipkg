@@ -1,6 +1,6 @@
 package example
 
-opts = "-p effects -p newprotocols"
+opts = "-p effects -p protocols"
 
 sourcedir = src
 main = Main

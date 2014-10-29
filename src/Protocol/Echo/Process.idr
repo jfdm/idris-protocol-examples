@@ -25,7 +25,7 @@ echoProcessServer client = do
     msg <- recvFrom 'Client
     case msg of
       Just m => do
-        sendTo 'Client (m ** refl)
+        sendTo 'Client (m ** Refl)
         rec (echoProcessServer client)
 
       Nothing => return ()
