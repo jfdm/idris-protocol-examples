@@ -1,7 +1,7 @@
 -- ------------------------------------------------------------------------ [  ]
 -- Common things
 -- --------------------------------------------------------------------- [ EOH ]
-module Protocol.Greeter.Common
+module Greeter.Common
 
 import Effects
 import Effect.StdIO
@@ -10,7 +10,7 @@ import Effect.State
 
 import System.Protocol
 
-import Protocol.Greeter
+import RFC.Greeter
 
 %access public
 

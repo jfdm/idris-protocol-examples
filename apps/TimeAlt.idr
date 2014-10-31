@@ -17,9 +17,9 @@ import RFC.Time
 -- ---------------------------------------------------------- [ Server Process ]
 ||| Implementation of the Time Protocol from the Server's Perspective
 covering
-timeProcessServer' : (proc : PID)
+timeServer' : (proc : PID)
                   -> Process (timeProtocol') 'Server ['Client := proc] [STDIO] ()
-timeProcessServer' proc = do
+timeServer' proc = do
 --    req <- recvFrom 'Client
     let t = systime
     let resp = if t /= 0
@@ -35,9 +35,9 @@ timeProcessServer' proc = do
 
 ||| Implementation of the Time Protocol from the Clients Perspective.
 covering
-timeProcessClient' : (proc : PID)
+timeClient' : (proc : PID)
                   -> Process (timeProtocol') 'Client ['Server := proc] [STDIO] ()
-timeProcessClient' proc = do
+timeClient' proc = do
 --    sendTo 'Server Nothing
     t <- recvFrom 'Server
     case t of
@@ -57,9 +57,13 @@ doTimeProcess' = runConc [()] doTime'
   where
     doTime' : Process (timeProtocol') 'Client [] [STDIO] ()
     doTime' = do
-        server <- spawn timeProcessServer' [()]
+        server <- spawn timeServer' [()]
         setChan 'Server server
-        timeProcessClient' server
+        timeClient' server
         dropChan 'Server
 
+-- -------------------------------------------------------------------- [ Main ]
+namespace Main
+  main : IO ()
+  main = doTimeProcess
 -- --------------------------------------------------------------------- [ EOF ]

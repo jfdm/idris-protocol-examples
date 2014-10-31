@@ -1,0 +1,15 @@
+package greeter
+
+opts = "-p effects -p protocols -p rfc"
+
+main = Main
+executable = greeter.app
+
+
+modules = Greeter
+        , Greeter.Common
+        , Greeter.Frontend
+        , Greeter.Backend
+        , Greeter.Example
+
+        , Main

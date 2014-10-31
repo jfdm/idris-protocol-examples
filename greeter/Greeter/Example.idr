@@ -1,7 +1,7 @@
 -- ------------------------------------------------------------------------ [  ]
 -- Example innvocations of greeters
 -- --------------------------------------------------------------------- [ EOH ]
-module Protocol.Greeter.Example
+module Greeter.Example
 
 import Effects
 import Effect.StdIO
@@ -10,10 +10,10 @@ import Effect.State
 
 import System.Protocol
 
-import Protocol.Greeter
-import Protocol.Greeter.Common
-import Protocol.Greeter.Frontend
-import Protocol.Greeter.Backend
+import RFC.Greeter
+import Greeter.Common
+import Greeter.Frontend
+import Greeter.Backend
 
 
 %access public

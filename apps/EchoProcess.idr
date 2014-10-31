@@ -19,14 +19,14 @@ import RFC.Echo
 |||
 ||| @client The PID of the client process.
 covering
-echoProcessServer : (client : PID)
+echoServer : (client : PID)
                   -> Process (echo) 'Server ['Client := client] [STDIO] ()
-echoProcessServer client = do
+echoServer client = do
     msg <- recvFrom 'Client
     case msg of
       Just m => do
         sendTo 'Client (m ** Refl)
-        rec (echoProcessServer client)
+        rec (echoServer client)
 
       Nothing => return ()
 
@@ -36,41 +36,48 @@ echoProcessServer client = do
 |||
 ||| @server The PID of the server process.
 covering
-echoProcessClient : (server : PID)
-                   -> Process (echo) 'Client ['Server := server] [STDIO] ()
-echoProcessClient server = do
-    putStrLn "Enter some text ('q' to quit):"
-    msg_raw <- getStr
-    case (processMsg (trim msg_raw)) of
+echoClient : Maybe String ->
+                  (server : PID) ->
+                  Process (echo) 'Client ['Server := server] [STDIO] ()
+echoClient msg server = do
+    case msg of
       Nothing => do
         sendTo 'Server Nothing
-        return ()
-
-      Just m => do
-        sendTo 'Server (Just m)
+      Just str => do
+        sendTo 'Server (Just str)
         (resp ** _ ) <- recvFrom 'Server
         putStrLn $ show resp
-        rec (echoProcessClient server)
+        rec (echoClient Nothing server)
 
-  where
-    processMsg : String -> Maybe String
-    processMsg msg = case msg == "q" of
-                       True => Nothing
-                       False => Just msg
 
 -- ------------------------------------------------------ [ Sample Innvocation ]
 
 ||| Sample Innvocation of the Echo protocols between the client and
 ||| server functions.
 covering
-doEchoProcess : IO ()
-doEchoProcess = runConc [()] doEcho'
+doEchoProcess : String -> IO ()
+doEchoProcess s = runConc [()] (doEcho s)
   where
-    doEcho' : Process (echo) 'Client [] [STDIO] ()
-    doEcho' = do
-       server <- spawn (echoProcessServer) [()]
+    doEcho : String -> Process (echo) 'Client [] [STDIO] ()
+    doEcho s = do
+       server <- spawn (echoServer) [()]
        setChan 'Server server
-       echoProcessClient server
+       echoClient (Just s) server
        dropChan 'Server
+
+
+processArgs : (List String) -> Maybe String
+processArgs [x] = Nothing
+processArgs (x::xs) = Just $ unwords xs
+
+-- -------------------------------------------------------------------- [ Main ]
+namespace Main
+  main : IO ()
+  main = do
+    args <- getArgs
+    case processArgs args of
+      Just str => doEchoProcess str
+      Nothing => doEchoProcess "\n"
+
 
 -- --------------------------------------------------------------------- [ EOF ]

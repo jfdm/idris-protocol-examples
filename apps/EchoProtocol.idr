@@ -19,14 +19,14 @@ import RFC.Echo
 |||
 ||| @client The PID of the client process.
 covering
-echoProcessServer : (client : PID)
-                  -> Process (echo) 'Server ['Client := client] [STDIO] ()
-echoProcessServer client = do
+echoServer : (client : PID)
+           -> Process (echo) 'Server ['Client := client] [STDIO] ()
+echoServer client = do
     msg <- recvFrom 'Client
     case msg of
       Just m => do
         sendTo 'Client (m ** Refl)
-        rec (echoProcessServer client)
+        rec (echoServer client)
 
       Nothing => return ()
 
@@ -36,9 +36,9 @@ echoProcessServer client = do
 |||
 ||| @server The PID of the server process.
 covering
-echoProcessClient : (server : PID)
-                   -> Process (echo) 'Client ['Server := server] [STDIO] ()
-echoProcessClient server = do
+echoClient : (server : PID)
+           -> Process (echo) 'Client ['Server := server] [STDIO] ()
+echoClient server = do
     putStrLn "Enter some text ('q' to quit):"
     msg_raw <- getStr
     case (processMsg (trim msg_raw)) of
@@ -50,7 +50,7 @@ echoProcessClient server = do
         sendTo 'Server (Just m)
         (resp ** _ ) <- recvFrom 'Server
         putStrLn $ show resp
-        rec (echoProcessClient server)
+        rec (echoClient server)
 
   where
     processMsg : String -> Maybe String
@@ -64,13 +64,18 @@ echoProcessClient server = do
 ||| server functions.
 covering
 doEchoProcess : IO ()
-doEchoProcess = runConc [()] doEcho'
+doEchoProcess = runConc [()] doEcho
   where
-    doEcho' : Process (echo) 'Client [] [STDIO] ()
-    doEcho' = do
-       server <- spawn (echoProcessServer) [()]
+    doEcho : Process (echo) 'Client [] [STDIO] ()
+    doEcho = do
+       server <- spawn (echoServer) [()]
        setChan 'Server server
-       echoProcessClient server
+       echoClient server
        dropChan 'Server
+
+-- -------------------------------------------------------------------- [ Main ]
+namespace Main
+  main : IO ()
+  main = doEchoProcess
 
 -- --------------------------------------------------------------------- [ EOF ]

@@ -1,7 +1,7 @@
 -- ------------------------------------------------------------------------ [  ]
 -- Client Process
 -- --------------------------------------------------------------------- [ EOH ]
-module Protocol.Greeter.Frontend
+module Greeter.Frontend
 
 import Effects
 import Effect.StdIO
@@ -10,8 +10,8 @@ import Effect.State
 
 import System.Protocol
 
-import Protocol.Greeter
-import Protocol.Greeter.Common
+import RFC.Greeter
+import Greeter.Common
 
 %access public
 

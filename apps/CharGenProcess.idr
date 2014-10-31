@@ -20,18 +20,18 @@ import Utils
 |||
 ||| @client The PID of the client process.
 covering
-chargenProcessServer : (str : Stream Char)
-                     -> Nat
-                     -> (client : PID)
-                     -> Process (chargen) 'Server ['Client := client] [STDIO] ()
-chargenProcessServer str pos client = do
+chargenServer : (str : Stream Char)
+              -> Nat
+              -> (client : PID)
+              -> Process (chargen) 'Server ['Client := client] [STDIO] ()
+chargenServer str pos client = do
     msg <- recvFrom 'Client
     case msg of
       Just m => do
         let pos' = mod (pos + 1) 92
         let str' = take 92 $ drop pos' str
         sendTo 'Client (pack str')
-        rec (chargenProcessServer str (pos + 1) client)
+        rec (chargenServer str (pos + 1) client)
 
       Nothing => return ()
 
@@ -41,9 +41,9 @@ chargenProcessServer str pos client = do
 |||
 ||| @server The PID of the server process.
 -- covering
-chargenProcessClient : (server : PID)
+chargenClient : (server : PID)
                    -> Process (chargen) 'Client ['Server := server] [STDIO] ()
-chargenProcessClient server = do
+chargenClient server = do
     putStrLn "To stop enter 'q':"
     msg_raw <- getStr
     case processMsg (trim msg_raw) of
@@ -52,7 +52,7 @@ chargenProcessClient server = do
       Just m => do
         sendTo 'Server (Just m)
         putStrLn !(recvFrom 'Server)
-        rec (chargenProcessClient server)
+        rec (chargenClient server)
   where
     processMsg : String -> Maybe String
     processMsg msg = case msg == "q" of
@@ -69,9 +69,14 @@ doChargenProcess = runConc [()] doEcho'
   where
     doEcho' : Process (chargen) 'Client [] [STDIO] ()
     doEcho' = do
-       server <- spawn (chargenProcessServer dummyTextStream 0) [()]
+       server <- spawn (chargenServer dummyTextStream 0) [()]
        setChan 'Server server
-       chargenProcessClient server
+       chargenClient server
        dropChan 'Server
+
+-- -------------------------------------------------------------------- [ Main ]
+namespace Main
+  main : IO ()
+  main = doChargenProcess
 
 -- --------------------------------------------------------------------- [ EOF ]

@@ -20,9 +20,9 @@ import RFC.Echo
 |||
 ||| @client The PID of the client process.
 covering
-echoProcessServer' : (client : PID)
+echoServer : (client : PID)
            -> Process (echo') 'Server ['Client := client] [STDIO] ()
-echoProcessServer' client = do
+echoServer client = do
     msg <- recvFrom 'Client
     sendTo 'Client msg
     return ()
@@ -32,9 +32,9 @@ echoProcessServer' client = do
 |||
 ||| @server The PID of the server process.
 covering
-echoProcessClient' : (server : PID)
+echoClient : (server : PID)
            -> Process (echo') 'Client ['Server := server] [STDIO] ()
-echoProcessClient' server = do
+echoProcessClient server = do
     putStrLn "Enter some text:"
     msg <- getStr
     sendTo 'Server msg
@@ -45,17 +45,22 @@ echoProcessClient' server = do
 
 ||| Sample Innvocation of the Echo protocols between the client and
 ||| server functions.
-doEchoProcess' : IO ()
-doEchoProcess' = forever $ runConc [()] doEcho''
+doEchoProcess : IO ()
+doEchoProcess = forever $ runConc [()] doEcho
   where
     forever : IO () -> IO ()
     forever proc = do proc; forever proc
 
-    doEcho'' : Process (echo') 'Client [] [STDIO] ()
-    doEcho'' = do
-       server <- spawn (echoProcessServer') [()]
+    doEcho : Process (echo') 'Client [] [STDIO] ()
+    doEcho = do
+       server <- spawn (echoServer) [()]
        setChan 'Server server
-       echoProcessClient' server
+       echoClient server
        dropChan 'Server
+
+-- -------------------------------------------------------------------- [ Main ]
+namespace Main
+  main : IO ()
+  main = doEchoProcess
 
 -- --------------------------------------------------------------------- [ EOF ]

@@ -21,9 +21,9 @@ import Utils
 |||
 ||| @proc The PID of the client process.
 covering
-daytimeProcessServer : (proc : PID)
+daytimeServer : (proc : PID)
                   -> Process (daytime) 'Server ['Client := proc] [STDIO] ()
-daytimeProcessServer proc = do
+daytimeServer proc = do
     msg <- recvFrom 'Client
     sendTo 'Client (getDayTime)
     return ()
@@ -34,9 +34,9 @@ daytimeProcessServer proc = do
 |||
 ||| @proc The PID of the server process.
 covering
-daytimeProcessClient : (proc : PID)
+daytimeClient : (proc : PID)
                    -> Process (daytime) 'Client ['Server := proc] [STDIO] ()
-daytimeProcessClient proc = do
+daytimeClient proc = do
     sendTo 'Server Nothing
     dt <- recvFrom 'Server
     case dt of
@@ -57,9 +57,14 @@ doDaytimeProcess = runConc [()] doDaytime'
   where
     doDaytime' : Process (daytime) 'Client [] [STDIO] ()
     doDaytime' = do
-       server <- spawn (daytimeProcessServer) [()]
+       server <- spawn (daytimeServer) [()]
        setChan 'Server server
-       daytimeProcessClient server
+       daytimeClient server
        dropChan 'Server
+
+-- -------------------------------------------------------------------- [ Main ]
+namespace Main
+  main : IO ()
+  main = doDaytimeProcess
 
 -- --------------------------------------------------------------------- [ EOF ]
