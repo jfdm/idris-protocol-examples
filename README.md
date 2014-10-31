@@ -7,6 +7,7 @@ Examples of using the Idris Protocols package for stuff.
 
 The [Protocols package](http://www.github.com/edwinb/protocols) is an idris package developed to investigate the use of EDSLs and Effects for working with protocols. This project provides a series of worked examples that illustrates the use of protocols.
 
+Below possibly implemented examples are listed.
 
 ## Network Protocols
 
