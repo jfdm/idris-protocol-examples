@@ -3,7 +3,7 @@
 -- Implementation of the echo protocol for process communication.
 --
 -- --------------------------------------------------------------------- [ EOH ]
-module Protocol.Chargen.Process
+module Chargen
 
 import Effects
 import Effect.StdIO
@@ -11,10 +11,9 @@ import Effect.Default
 
 import System.Protocol
 
-import Protocol.CharGen
+import RFC.CharGen
+import Utils
 
-dummyTextStream : Stream Char
-dummyTextStream = cycle $ fromList $ map (\x => chr x) [33..125]
 -- ---------------------------------------------------------- [ Server Process ]
 
 ||| Implementation of the Echo Protocol from the Server's perspective.

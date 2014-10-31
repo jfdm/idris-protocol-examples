@@ -3,7 +3,7 @@
 -- Implementation of the Daytime protocol
 --
 -- --------------------------------------------------------------------- [ EOH ]
-module Protocol.Daytime.Process
+module Daytime
 
 import Effects
 import Effect.StdIO
@@ -11,8 +11,9 @@ import Effect.Default
 
 import System.Protocol
 
-import Protocol.Daytime
-import Protocol.Daytime.Utils
+import RFC.Daytime
+import RFC.Utils
+import Utils
 
 -- ---------------------------------------------------------- [ Server Process ]
 

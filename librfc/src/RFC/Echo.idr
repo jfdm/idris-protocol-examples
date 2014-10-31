@@ -11,7 +11,7 @@
 -- http://tools.ietf.org/html/rfc862
 --
 -- --------------------------------------------------------------------- [ EOH ]
-module Protocol.Echo
+module RFC.Echo
 
 import Effects
 
@@ -20,7 +20,7 @@ import Effect.StdIO
 
 import System.Protocol
 
-import Protocol.Utils
+import RFC.Utils
 
 ||| An echo service simply sends back to the originating source any
 ||| data it receives.

@@ -17,7 +17,7 @@
 -- http://tools.ietf.org/html/rfc868
 --
 -- --------------------------------------------------------------------- [ EOH ]
-module Protocol.Time
+module RFC.Time
 
 import Effects
 

@@ -1,0 +1,12 @@
+package rfc
+
+opts = "-p effects -p protocols"
+
+sourcedir = src
+
+modules = RFC.Utils
+        , RFC.Echo
+        , RFC.Time
+        , RFC.Daytime
+        , RFC.CharGen
+        , RFC.Greeter

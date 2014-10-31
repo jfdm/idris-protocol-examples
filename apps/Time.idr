@@ -3,7 +3,7 @@
 -- Implementation of the Time Protocol for programs
 --
 -- --------------------------------------------------------------------- [ EOH ]
-module Protocol.Time.ProcessAlt
+module Time
 
 import Effects
 
@@ -12,15 +12,15 @@ import Effect.StdIO
 
 import System.Protocol
 
-import Protocol.Time
+import RFC.Time
 
 -- ---------------------------------------------------------- [ Server Process ]
 ||| Implementation of the Time Protocol from the Server's Perspective
 covering
-timeProcessServer' : (proc : PID)
-                  -> Process (timeProtocol') 'Server ['Client := proc] [STDIO] ()
-timeProcessServer' proc = do
---    req <- recvFrom 'Client
+timeProcessServer : (proc : PID)
+                  -> Process (timeProtocol) 'Server ['Client := proc] [STDIO] ()
+timeProcessServer proc = do
+    req <- recvFrom 'Client
     let t = systime
     let resp = if t /= 0
                  then Right t
@@ -35,10 +35,10 @@ timeProcessServer' proc = do
 
 ||| Implementation of the Time Protocol from the Clients Perspective.
 covering
-timeProcessClient' : (proc : PID)
-                  -> Process (timeProtocol') 'Client ['Server := proc] [STDIO] ()
-timeProcessClient' proc = do
---    sendTo 'Server Nothing
+timeProcessClient : (proc : PID)
+                  -> Process (timeProtocol) 'Client ['Server := proc] [STDIO] ()
+timeProcessClient proc = do
+    sendTo 'Server Nothing
     t <- recvFrom 'Server
     case t of
       Left err => do
@@ -52,14 +52,14 @@ timeProcessClient' proc = do
 -- ------------------------------------------------------ [ Sample Innvocation ]
 ||| Sample innvocation
 covering
-doTimeProcess' : IO ()
-doTimeProcess' = runConc [()] doTime'
+doTimeProcess : IO ()
+doTimeProcess = runConc [()] doTime'
   where
-    doTime' : Process (timeProtocol') 'Client [] [STDIO] ()
+    doTime' : Process (timeProtocol) 'Client [] [STDIO] ()
     doTime' = do
-        server <- spawn timeProcessServer' [()]
+        server <- spawn timeProcessServer [()]
         setChan 'Server server
-        timeProcessClient' server
+        timeProcessClient server
         dropChan 'Server
 
 -- --------------------------------------------------------------------- [ EOF ]

@@ -1,4 +1,4 @@
-module Protocol.Greeter
+module RFC.Greeter
 
 import Effects
 import Effect.StdIO

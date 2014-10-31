@@ -1,36 +1,17 @@
--- --------------------------------------------------------------- [ Utils.idr ]
---
--- Utility functions
---
--- Given the absence of a true daytime module for Idris we simulate
--- the utility here.
---
--- --------------------------------------------------------------------- [ EOH ]
-module Protocol.Daytime.Utils
+module Utils
 
-import System
+import RFC.Utils
 
 %access public
 
-||| Simple Record for DayTime
-record DayTime : Type where
-  MkDaytime : (y : Int)
-            -> (m : Int)
-            -> (d : Int)
-            -> (hh : Int)
-            -> (mm : Int)
-            -> (ss : Int)
-            -> DayTime
+-- ----------------------------------------------------------------- [ CharGen ]
+dummyTextStream : Stream Char
+dummyTextStream = cycle $ fromList $ map (\x => chr x) [33..125]
 
-instance Show DayTime where
-    show date = unwords [show (y  date), "-",
-                         show (m  date), "-",
-                         show (d  date), " ",
-                         show (hh date), ":",
-                         show (mm date), ":",
-                         show (ss date) ]
+-- ----------------------------------------------------------------- [ DayTime ]
 
-||| Embarrassingly bad function to do conversion between unix time and date time
+||| Embarrassingly bad function to do conversion between unix time and
+||| date time
 private
 convert : Int -> DayTime
 convert i = MkDaytime
@@ -86,7 +67,5 @@ getDayTime = let t = systime in
   where
     systime : Int
     systime = unsafePerformIO time
-
-
 
 -- --------------------------------------------------------------------- [ EOF ]

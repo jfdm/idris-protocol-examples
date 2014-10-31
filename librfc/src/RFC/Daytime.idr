@@ -24,7 +24,7 @@
 --- ```
 --
 -- --------------------------------------------------------------------- [ EOH ]
-module Protocol.Daytime
+module RFC.Daytime
 
 import Effects
 
@@ -33,7 +33,7 @@ import Effect.StdIO
 
 import System.Protocol
 
-import Protocol.Daytime.Utils
+import RFC.Utils
 
 ||| A daytime service simply sends a the current date and time as a
 ||| character string without regard to the input.
