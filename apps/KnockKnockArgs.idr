@@ -3,7 +3,7 @@
 -- Implementation of the knock protocol for process communication.
 --
 -- --------------------------------------------------------------------- [ EOH ]
-module KnockKnock
+module KnocKnockArgs
 
 import Effects
 import Effect.StdIO
@@ -32,53 +32,40 @@ knockServer client = do
 
 -- ---------------------------------------------------------- [ Client Process ]
 covering
-knockClient : String -> String
-            -> (server : PID) -> Process (knockknock) 'Client ['Server := server] [STDIO] ()
-knockClient setup reveal svr = do
+knockClient : (server : PID)
+            -> Process (knockknock) 'Client ['Server := server] [STDIO] ()
+knockClient server = do
     sendTo 'Server ("Knock Knock" ** Refl)
 
     (res ** _) <- recvFrom 'Server
     putStrLn $ "From Mark: " ++ res
 
-    sendTo 'Server setup
+    putStr "Enter the setup: "
+    setup <- getStr
+    sendTo 'Server $ trim setup
 
     (res' ** _) <- recvFrom 'Server
     putStrLn $ "From Mark: " ++ res'
 
-    sendTo 'Server reveal
+    putStr "Enter the reveal: "
+    reveal <- getStr
+    sendTo 'Server $ trim reveal
 
 -- ------------------------------------------------------ [ Sample Innvocation ]
 
-||| Sample Innvocation of the Echo protocols between the client and
-||| server functions.
-covering
-doKnockKnock : String -> String -> IO ()
-doKnockKnock setup reveal = runConc [()] (doKnock setup reveal)
+doKnockKnock : IO ()
+doKnockKnock = runConc [()] doKnock
   where
-    doKnock : String -> String -> Process (knockknock) 'Client [] [STDIO] ()
-    doKnock s r = do
+    doKnock : Process (knockknock) 'Client [] [STDIO] ()
+    doKnock = do
        server <- spawn (knockServer) [()]
        setChan 'Server server
-       knockClient s r server
+       knockClient server
        dropChan 'Server
-       pure ()
-
-
-processArgs : (List String) -> Maybe (String, String)
-processArgs [x] = Nothing
-processArgs (x::y::z) = Just (y, unwords z)
 
 -- -------------------------------------------------------------------- [ Main ]
-usage : String
-usage = unwords ["Usage: ./knockknock <setup> <reveal>"]
-
 namespace Main
   main : IO ()
-  main = do
-    args <- getArgs
-    case processArgs args of
-      Just (x,y) => doKnockKnock x y
-      Nothing => putStrLn usage
-
+  main = doKnockKnock
 
 -- --------------------------------------------------------------------- [ EOF ]

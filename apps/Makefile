@@ -4,10 +4,15 @@ IDRIS = idris
 PKGS = -p effects -p protocols -p rfc
 OPTS =
 
-all : time-all chargen echo-all
+all : time-all chargen echo-all knock-all
+
+knock-all : knock knock-args
 
 knock :
-	$ {IDRIS} ${PKGS} ${OPTS} KnockKnock.idr -o knockknock
+	${IDRIS} ${PKGS} ${OPTS} KnockKnock.idr -o knockknock
+
+knock-args :
+	${IDRIS} ${PKGS} ${OPTS} KnockKnockArgs.idr -o knockknock-args
 
 time-all : daytime time time-alt
 
@@ -25,7 +30,6 @@ chargen :
 
 echo-all : echo-proto echo-naive echo
 
-
 echo :
 	${IDRIS} ${PKGS} ${OPTS} EchoProcess.idr -o echo
 
@@ -40,6 +44,6 @@ clean :
 
 clobber: clean
 	find . -name "*~" -delete
-	rm -rf echo-naive echo-proto echo chargen daytime time time-alt knockknock
+	rm -rf echo-naive echo-proto echo chargen daytime time time-alt knockknock knockknock-args
 
 .PHONY: clean

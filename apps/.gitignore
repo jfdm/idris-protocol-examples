@@ -1,2 +1,9 @@
+echo-naive
+echo-proto
 echo
-echo-*
+chargen
+daytime
+time
+time-alt
+knockknock
+knockknock-args
