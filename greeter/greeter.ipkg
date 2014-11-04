@@ -6,8 +6,7 @@ main = Main
 executable = greeter.app
 
 
-modules = Greeter
-        , Greeter.Common
+modules = Greeter.Common
         , Greeter.Frontend
         , Greeter.Backend
         , Greeter.Example
