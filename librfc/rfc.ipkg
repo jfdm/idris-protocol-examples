@@ -10,3 +10,4 @@ modules = RFC.Utils
         , RFC.Daytime
         , RFC.CharGen
         , RFC.Greeter
+        , RFC.Knock
