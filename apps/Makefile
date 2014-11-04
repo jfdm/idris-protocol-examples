@@ -6,8 +6,10 @@ OPTS =
 
 all : time-all chargen echo-all
 
-time-all : daytime time time-alt
+knock :
+	$ {IDRIS} ${PKGS} ${OPTS} KnockKnock.idr -o knockknock
 
+time-all : daytime time time-alt
 
 daytime :
 	${IDRIS} ${PKGS} ${OPTS} DayTime.idr -o daytime
@@ -38,6 +40,6 @@ clean :
 
 clobber: clean
 	find . -name "*~" -delete
-	rm -rf echo-naive echo-proto echo chargen daytime time time-alt
+	rm -rf echo-naive echo-proto echo chargen daytime time time-alt knockknock
 
 .PHONY: clean
