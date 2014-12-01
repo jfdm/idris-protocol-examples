@@ -18,10 +18,10 @@ time :
 	${IDRIS} ${PKGS} ${OPTS} Time.idr -o time
 
 time-alt :
-	${IDRIS} ${PKGS} ${OPTS} ChargenProcess.idr -o time-alt
+	${IDRIS} ${PKGS} ${OPTS} TimeAlt.idr -o time-alt
 
 chargen :
-	${IDRIS} ${PKGS} ${OPTS} ChargenProcess.idr -o chargen
+	${IDRIS} ${PKGS} ${OPTS} CharGenProcess.idr -o chargen
 
 echo-all : echo-proto echo-naive echo
 

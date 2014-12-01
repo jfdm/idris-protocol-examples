@@ -34,7 +34,7 @@ echoServer client = do
 covering
 echoClient : (server : PID)
            -> Process (echo') 'Client ['Server := server] [STDIO] ()
-echoProcessClient server = do
+echoClient server = do
     putStrLn "Enter some text:"
     msg <- getStr
     sendTo 'Server msg

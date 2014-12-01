@@ -52,8 +52,8 @@ timeClient' proc = do
 -- ------------------------------------------------------ [ Sample Innvocation ]
 ||| Sample innvocation
 covering
-doTimeProcess' : IO ()
-doTimeProcess' = runConc [()] doTime'
+doTimeProcess : IO ()
+doTimeProcess = runConc [()] doTime'
   where
     doTime' : Process (timeProtocol') 'Client [] [STDIO] ()
     doTime' = do
