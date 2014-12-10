@@ -2,8 +2,6 @@ package rfc
 
 opts = "-p effects -p protocols"
 
-sourcedir = src
-
 modules = RFC.Utils
         , RFC.Echo
         , RFC.Time
@@ -11,3 +9,4 @@ modules = RFC.Utils
         , RFC.CharGen
         , RFC.Greeter
         , RFC.Knock
+        , RFC.Handshake

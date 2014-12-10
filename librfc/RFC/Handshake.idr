@@ -1,4 +1,4 @@
-module RFC.TCPHandshake
+module RFC.Handshake
 
 import Effects
 
@@ -8,6 +8,8 @@ import Effect.StdIO
 import System.Protocol
 
 import RFC.Utils
+
+data TCPMsg = Syn | SynAck | Ack
 
 total
 handshake' : Protocol ['Alice, 'Bob] ()
