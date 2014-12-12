@@ -14,7 +14,7 @@ build_clean: clean build
 
 clean:
 	${IDRIS} --clean ${PKG}.ipkg
-	rm -rf ${EXE}
+	find . -name "*~" -delete
 
 check: clean
 	${IDRIS} --checkpkg ${PKG}.ipkg
@@ -23,6 +23,6 @@ doc:
 	${IDRIS} --mkdoc ${PKG}.ipkg
 
 clobber: clean
-	find . -name "*~" -delete
+	rm -rf ${EXE}
 
 .PHONY: clean install build clean check doc clobber

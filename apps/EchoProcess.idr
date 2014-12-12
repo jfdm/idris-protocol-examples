@@ -20,7 +20,7 @@ import RFC.Echo
 ||| @client The PID of the client process.
 covering
 echoServer : (client : PID)
-                  -> Process (echo) 'Server ['Client := client] [STDIO] ()
+           -> Process (echo) 'Server ['Client := client] [STDIO] ()
 echoServer client = do
     msg <- recvFrom 'Client
     case msg of
@@ -36,9 +36,9 @@ echoServer client = do
 |||
 ||| @server The PID of the server process.
 covering
-echoClient : Maybe String ->
-                  (server : PID) ->
-                  Process (echo) 'Client ['Server := server] [STDIO] ()
+echoClient : Maybe String
+           -> (server : PID)
+           -> Process (echo) 'Client ['Server := server] [STDIO] ()
 echoClient msg server = do
     case msg of
       Nothing => do
@@ -48,7 +48,6 @@ echoClient msg server = do
         (resp ** _ ) <- recvFrom 'Server
         putStrLn $ show resp
         rec (echoClient Nothing server)
-
 
 -- ------------------------------------------------------ [ Sample Innvocation ]
 
@@ -64,7 +63,6 @@ doEchoProcess s = runConc [()] (doEcho s)
        setChan 'Server server
        echoClient (Just s) server
        dropChan 'Server
-
 
 processArgs : (List String) -> Maybe String
 processArgs [x] = Nothing

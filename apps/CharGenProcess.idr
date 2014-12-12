@@ -42,7 +42,7 @@ chargenServer str pos client = do
 ||| @server The PID of the server process.
 -- covering
 chargenClient : (server : PID)
-                   -> Process (chargen) 'Client ['Server := server] [STDIO] ()
+              -> Process (chargen) 'Client ['Server := server] [STDIO] ()
 chargenClient server = do
     putStrLn "To stop enter 'q':"
     msg_raw <- getStr

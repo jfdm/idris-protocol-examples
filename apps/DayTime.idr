@@ -22,7 +22,7 @@ import Utils
 ||| @proc The PID of the client process.
 covering
 daytimeServer : (proc : PID)
-                  -> Process (daytime) 'Server ['Client := proc] [STDIO] ()
+              -> Process (daytime) 'Server ['Client := proc] [STDIO] ()
 daytimeServer proc = do
     msg <- recvFrom 'Client
     sendTo 'Client (getDayTime)
@@ -35,7 +35,7 @@ daytimeServer proc = do
 ||| @proc The PID of the server process.
 covering
 daytimeClient : (proc : PID)
-                   -> Process (daytime) 'Client ['Server := proc] [STDIO] ()
+              -> Process (daytime) 'Client ['Server := proc] [STDIO] ()
 daytimeClient proc = do
     sendTo 'Server Nothing
     dt <- recvFrom 'Server
