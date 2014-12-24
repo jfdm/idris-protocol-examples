@@ -33,7 +33,6 @@ readCmd = case (process !getStr) of
       [":?"]          => Just Help
       [":help"]       => Just Help
       [":q"]          => Just Quit
-      [":cheat"]      => Just Cheat
       _ => Nothing
 
 
@@ -49,10 +48,6 @@ clientBody proc = do
      case cmd of
        GreetMe str => do
          putStrLn !(recvFrom 'Bob)
-         dropChan 'Bob
-         rec (clientBody proc)
-
-       Cheat => do
          dropChan 'Bob
          rec (clientBody proc)
 

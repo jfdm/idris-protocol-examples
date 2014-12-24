@@ -12,14 +12,13 @@ import System.Protocol
 -- ------------------------------------------------------------------- [ Model ]
 
 -- Internal representations
-data Command = GreetMe String | Help | Cheat | Quit
+data Command = GreetMe String | Help | Quit
 
 -- How we display the internal representation for Command.
 instance Show Command where
     show (GreetMe str) = ":greet " ++ show str
     show Quit = ":q"
     show Help = ":?"
-    show Cheat = ":cheat"
 
 -- -------------------------------------------------- [ Protocol Specification ]
 
@@ -38,9 +37,6 @@ gBody = do
 
       Help => do
         'Bob ==> 'Alice | String
-        Rec gBody
-
-      Cheat => do
         Rec gBody
 
       Quit => Done

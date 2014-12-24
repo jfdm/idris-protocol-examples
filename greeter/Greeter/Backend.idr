@@ -50,10 +50,6 @@ mutual
           dropChan 'Alice
           rec (backendBody proc)
 
-        Cheat => do
-          dropChan 'Alice
-          rec (backendBody' proc)
-
         Quit => do
           dropChan 'Alice
           return ()
@@ -77,10 +73,6 @@ mutual
 
         Help => do
           sendTo 'Alice obtainHelp
-          dropChan 'Alice
-          rec (backendBody' proc)
-
-        Cheat => do
           dropChan 'Alice
           rec (backendBody proc)
 
