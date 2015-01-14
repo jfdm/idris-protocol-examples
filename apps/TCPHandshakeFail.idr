@@ -1,9 +1,9 @@
 -- ------------------------------------------------------------- [ Process.idr ]
 --
--- Implementation of the echo protocol for process communication.
+-- Failing Implementation of the echo protocol for process communication.
 --
 -- --------------------------------------------------------------------- [ EOH ]
-module TCPHandshake
+module TCPHandshakeFail
 
 import Effects
 import Effect.StdIO
@@ -19,9 +19,9 @@ bob : Nat -> (client : PID)
       -> Process (handshake) 'Bob ['Alice := client] [STDIO] ()
 bob seqno client = do
     (msg, x) <- recvFrom 'Alice
-    let x' = S x
+    let x' = x + 20
     putStrLn $ "Bob -> Alice: SynAck, " ++ show seqno ++ ", " ++ show x'
-    sendTo 'Alice (SynAck, seqno, (S x ** Refl))
+    sendTo 'Alice (SynAck, seqno, (x'** Refl))
     (msg1, no') <- recvFrom 'Alice
     putStrLn $ "Received from Alice: " ++ show (getWitness no')
     pure ()
@@ -33,8 +33,9 @@ alice seqno server = do
     putStrLn $ "Alice -> Bob: Syn, " ++ show seqno
     sendTo 'Bob (Syn, seqno)
     (msg, y, x) <- recvFrom 'Bob
-    putStrLn $ "Alice -> Bob: Ack " ++ show (S y)
-    sendTo 'Bob (Ack, (S y ** Refl))
+    let y' = S y
+    putStrLn $ "Alice -> Bob: Ack " ++ show y'
+    sendTo 'Bob (Ack, (y' ** Refl))
     pure ()
 
 covering

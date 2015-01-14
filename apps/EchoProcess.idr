@@ -8,7 +8,9 @@ module EchoProcess
 import Effects
 import Effect.StdIO
 import Effect.Default
+import Effect.Msg
 
+import System
 import System.Protocol
 
 import RFC.Echo

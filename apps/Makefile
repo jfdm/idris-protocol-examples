@@ -4,7 +4,7 @@ IDRIS = idris
 PKGS = -p effects -p protocols -p rfc
 OPTS =
 
-all : time-all chargen echo-all knock-all tcp
+all : time-all echo-all knock-all tcp
 
 knock-all : knock knock-args
 
@@ -17,6 +17,9 @@ knock-args :
 tcp :
 	${IDRIS} ${PKGS} ${OPTS} TCPHandshake.idr -o tcpshake
 
+tcpfail :
+	${IDRIS} ${PKGS} ${OPTS} TCPHandshakeFail.idr -o tcpshake
+
 time-all : daytime time time-alt
 
 daytime :
@@ -28,8 +31,8 @@ time :
 time-alt :
 	${IDRIS} ${PKGS} ${OPTS} TimeAlt.idr -o time-alt
 
-chargen :
-	${IDRIS} ${PKGS} ${OPTS} CharGenProcess.idr -o chargen
+# chargen :
+# 	${IDRIS} ${PKGS} ${OPTS} CharGenProcess.idr -o chargen
 
 echo-all : echo-proto echo-naive echo
 
@@ -47,6 +50,6 @@ clean :
 
 clobber: clean
 	find . -name "*~" -delete
-	rm -rf echo-naive echo-proto echo chargen daytime time time-alt knockknock knockknock-args tcpshake
+	rm -rf echo-naive echo-proto echo daytime time time-alt knockknock knockknock-args tcpshake
 
 .PHONY: clean

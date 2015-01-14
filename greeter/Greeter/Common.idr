@@ -7,6 +7,7 @@ import Effects
 import Effect.StdIO
 import Effect.Default
 import Effect.State
+import Effect.Msg
 
 import System.Protocol
 

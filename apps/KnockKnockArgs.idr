@@ -8,46 +8,48 @@ module KnocKnockArgs
 import Effects
 import Effect.StdIO
 import Effect.Default
+import Effect.Msg
 
+import System
 import System.Protocol
 
 import RFC.Knock
 
 -- ---------------------------------------------------------- [ Server Process ]
 covering
-knockServer : (client : PID)
+knockee : (client : PID)
             -> Process (knockknock) 'Server ['Client := client] [STDIO] ()
-knockServer client = do
+knockee client = do
     (kk ** _ ) <- recvFrom 'Client
-    putStrLn $ "From Teller: " ++ kk
+    putStrLn $ "From Knocker: " ++ kk
 
     sendTo 'Client ("Who's there?" ** Refl)
 
     res <- recvFrom 'Client
-    putStrLn $ "From Teller: " ++ res
+    putStrLn $ "From Knocker: " ++ res
 
     sendTo 'Client ((res ++ " who?") ** Refl)
 
-    putStrLn $ "From Teller: " ++ !(recvFrom 'Client)
+    putStrLn $ "From Knocker: " ++ !(recvFrom 'Client)
 
 -- ---------------------------------------------------------- [ Client Process ]
 covering
-knockClient : (server : PID)
+knocker : (server : PID)
             -> Process (knockknock) 'Client ['Server := server] [STDIO] ()
-knockClient server = do
+knocker server = do
     sendTo 'Server ("Knock Knock" ** Refl)
 
     (res ** _) <- recvFrom 'Server
-    putStrLn $ "From Mark: " ++ res
+    putStrLn $ "From Knockee: " ++ res
 
-    putStr "Enter the setup: "
+    putStr "Enter the msg: "
     setup <- getStr
     sendTo 'Server $ trim setup
 
     (res' ** _) <- recvFrom 'Server
-    putStrLn $ "From Mark: " ++ res'
+    putStrLn $ "From Knockee: " ++ res'
 
-    putStr "Enter the reveal: "
+    putStr "Enter the res: "
     reveal <- getStr
     sendTo 'Server $ trim reveal
 
@@ -58,9 +60,9 @@ doKnockKnock = runConc [()] doKnock
   where
     doKnock : Process (knockknock) 'Client [] [STDIO] ()
     doKnock = do
-       server <- spawn (knockServer) [()]
+       server <- spawn (knockee) [()]
        setChan 'Server server
-       knockClient server
+       knocker server
        dropChan 'Server
 
 -- -------------------------------------------------------------------- [ Main ]

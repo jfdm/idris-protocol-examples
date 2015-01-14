@@ -8,6 +8,7 @@ module Chargen
 import Effects
 import Effect.StdIO
 import Effect.Default
+import Effect.Msg
 
 import System.Protocol
 

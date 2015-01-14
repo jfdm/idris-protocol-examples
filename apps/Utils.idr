@@ -1,12 +1,11 @@
 module Utils
 
-import RFC.Utils
+import public Data.Vect
+import public System
+
+import public RFC.Utils
 
 %access public
-
--- ----------------------------------------------------------------- [ CharGen ]
-dummyTextStream : Stream Char
-dummyTextStream = cycle $ fromList $ map (\x => chr x) [33..125]
 
 -- ----------------------------------------------------------------- [ DayTime ]
 
