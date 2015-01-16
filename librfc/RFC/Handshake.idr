@@ -1,9 +1,9 @@
 module RFC.Handshake
 
 import Effects
-
 import Effect.Default
 import Effect.StdIO
+import Effect.Msg
 
 import System.Protocol
 

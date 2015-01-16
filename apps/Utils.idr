@@ -1,9 +1,8 @@
 module Utils
 
-import public Data.Vect
-import public System
+import Data.Vect
 
-import public RFC.Utils
+import RFC.Utils
 
 %access public
 
